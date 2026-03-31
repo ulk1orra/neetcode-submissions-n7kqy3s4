@@ -1,0 +1,51 @@
+class Solution {
+public:
+    string minWindow(string s, string t) // string minWindow("ADOBECODEBANC", "ABC")
+    {
+        if (t.empty())
+        {
+            return "";
+        }
+
+        unordered_map<char, int> countT;
+        unordered_map<char, int> window;
+
+        for (char c : t)
+        {
+            countT[c]++;
+        }
+
+        int have = 0;
+        int need = countT.size();
+        int resLen = INT_MAX;
+        pair<int, int> res = { -1,-1 };
+
+        int l = 0;
+        for (int r = 0; r < s.length(); r++)
+        {
+            char c = s[r];
+            window[c]++;
+            if (countT.count(c) && window[c] == countT[c])
+            {
+                have++;
+            }
+
+            while (have == need)
+            {
+                if ((r - l + 1) < resLen)
+                {
+                    resLen = r - l + 1;
+                    res = {l, r};
+                }
+
+                window[s[l]]--;
+                if (countT.count(s[l]) && window[s[l]] < countT[s[l]])
+                {
+                    have--;
+                }
+                l++;
+            }
+        }
+            return resLen == INT_MAX ? "" : s.substr(res.first, resLen);
+    }
+};
